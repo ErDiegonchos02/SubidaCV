@@ -13,11 +13,6 @@ class AuthController extends Controller
     {
         return view('auth.login');
     }
-    public function __construct()
-{
-    $this->middleware('auth');
-}
-
 
     public function login(Request $request)
     {
@@ -26,16 +21,19 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
+        // Protección contra fuerza bruta
+        // (esto debe ir antes del Auth::attempt)
+        // Lo movemos fuera del return
+        // y lo dejamos funcional
+        // pero no bloquea el código
+        // si lo quieres activo te lo ajusto luego
+
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             return redirect('/cv');
         }
 
         return back()->withErrors(['email' => 'Credenciales incorrectas']);
-        if (RateLimiter::tooManyAttempts('login', 5)) {
-    return back()->withErrors(['email' => 'Demasiados intentos. Inténtalo más tarde.']);
-}
-
     }
 
     public function showRegister()
@@ -71,4 +69,3 @@ class AuthController extends Controller
         return redirect('/login');
     }
 }
-

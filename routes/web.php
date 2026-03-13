@@ -23,9 +23,5 @@ Route::middleware('auth')->group(function () {
     Route::delete('/cv/delete', [CVController::class, 'delete'])->name('cv.delete');
 
 });
-use Illuminate\Support\Facades\RateLimiter;
 
-RateLimiter::for('login', function ($request) {
-    return Limit::perMinute(5)->by($request->email.$request->ip());
-});
 
